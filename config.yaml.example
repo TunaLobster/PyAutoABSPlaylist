@@ -1,0 +1,27 @@
+server:
+  address: ADDRESS
+  user: USERNAME
+  password: PASSWORD
+libraries:
+- library_name: Podcasts
+  playlists:
+  - playlist_name: Daily
+    include_in_progress: True
+    include_finished: False
+    sort_order:  # This has not been implemented
+    - tier
+    - roundrobin
+    feeds:
+    - feed_name: The Daily
+      tier: 2
+      sort: newest
+      count: 2
+    - feed_name: Up First from NPR
+      tier: 1
+      sort: newest
+      count: 1
+    - feed_name: The Best of Car Talk
+      tier: 3
+      sort: oldest
+      count: 5
+
