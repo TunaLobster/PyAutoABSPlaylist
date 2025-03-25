@@ -166,7 +166,7 @@ async def auto_playlists():
                 else:
                     pass
 
-                # fitler episode list with should_include_item
+                # filter episode list with should_include_item
                 playlist_config = get_config_library_playlist_config(config, lib["name"], playlist_name)
                 temp = []
                 for item in prepared_podcast_episode_list:
@@ -202,19 +202,19 @@ async def auto_playlists():
                 print("modifying existing playlist", playlist[1])
                 existing_playlist = abs_user_playlists[abs_user_playlists_names.index(playlist[1])]
                 playlist_config = get_config_library_playlist_config(config, lib["name"], playlist[1])
-                exisiting_playlist_transform = []
+                existing_playlist_transform = []
                 # change the existing items into objects that can be use with the playlist api endpoints
                 for item in existing_playlist["items"]:
-                    exisiting_playlist_transform.append(
+                    existing_playlist_transform.append(
                         ABSClient.PlaylistItem(item["episode"]["libraryItemId"], item["episodeId"])
                     )
 
                 # Add items not in existing playlist
-                items_to_add = list(set(playlist[2]) - set(exisiting_playlist_transform))
+                items_to_add = list(set(playlist[2]) - set(existing_playlist_transform))
                 if len(items_to_add) > 0:
                     await abs_client.playlist_batch_add(existing_playlist["id"], items=items_to_add)
                 # Remove items not in updated playlist
-                items_to_remove = list(set(exisiting_playlist_transform) - set(playlist[2]))
+                items_to_remove = list(set(existing_playlist_transform) - set(playlist[2]))
                 if len(items_to_remove) > 0:
                     await abs_client.playlist_batch_remove(existing_playlist["id"], items=items_to_remove)
 
