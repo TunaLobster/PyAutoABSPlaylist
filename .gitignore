@@ -5,3 +5,6 @@ __pycache__/
 
 # The config file that probably has user information in it
 config.yaml
+
+# Python environment
+.venv
