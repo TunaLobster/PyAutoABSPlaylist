@@ -77,7 +77,11 @@ async def should_include_item(abs_client, playlist_config, library_item_id, epis
     if item_info["userMediaProgress"]["isFinished"]:
         if playlist_config["include_finished"]:
             return True
-    if playlist_config["include_in_progress"] and 0.0 < item_info["userMediaProgress"]["progress"] < 1.0:
+    if (
+        playlist_config["include_in_progress"]
+        and 0.0 < item_info["userMediaProgress"]["progress"] < 1.0
+        and not item_info["userMediaProgress"]["isFinished"]
+    ):
         return True
 
 
