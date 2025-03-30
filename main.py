@@ -177,6 +177,8 @@ async def auto_playlists():
                     r = await should_include_item(abs_client, playlist_config, item["libraryItemId"], item["id"])
                     if r and item not in temp:
                         temp.append(item)
+                if len(temp) == 0:
+                    continue
                 prepared_podcast_episode_list = temp
 
                 # limit the number of episodes if requested
