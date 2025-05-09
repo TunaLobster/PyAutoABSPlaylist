@@ -9,14 +9,14 @@ libraries:
     include_in_progress: True
     include_finished: False
     sort_order:
-    # Possible values: "tier", "roundrobin", "shuffle", or any combination.
-    # tier: episodes are grouped and sorted by tier, with the lowest tier value listed first.
-    # roundrobin: sorted roundrobin style, e.g.: ('ABC', 'D', 'EF') → A D E B F C.
+    # Possible values: "tier", "roundrobin", "shuffle", or any combination. 
+    # tier: podasts are grouped and sorted by tier, with the lowest tier value listed first.
+    # roundrobin: all episodes are sorted roundrobin style, e.g.: (podcast 1: episode 101, episode 102, episode 103; podcast 2: episode 201; podcast 3: espisode 301, episode 302) → 101, 201, 301, 102, 302, 103C.
     # shuffle: all episodes are sorted randomly, ignoring their tier value.
-    # tier and roundrobin: episodes are grouped and sorted by tier and then sorted roundrobin within each tier.
-    # tier and shuffle: episodes are grouped and sorted by tier and then sorted randomly within each tier.
-    # roundrobin and shuffle: roundrobin is ignored and all episodes are sorted randomly, ignoring their tier value.
-    # tier, roundrobin, and shuffle: same as tier and shuffle (roundrobin is ignored).
+    # tier + roundrobin: podcasts are grouped and sorted by tier and then episodes are sorted roundrobin within each tier.
+    # tier + shuffle: podcasts are grouped and sorted by tier and then episodes are sorted randomly within each tier.
+    # roundrobin + shuffle: all podcasts are sorted roundrobin, with the episodes of each podcast randomized.
+    # tier + roundrobin + shuffle: podcasts are grouped by tier and sorted by roundrobin, with the episodes of each podcast randomized.
     - tier
     - roundrobin
     - shuffle

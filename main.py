@@ -82,6 +82,10 @@ async def should_include_item(abs_client, playlist_config, library_item_id, epis
         return True
 
 
+def normalize_name(name):
+    return name.strip().lower()
+
+
 async def auto_playlists():
     config = yaml.load(open(os.path.join(script_dir, "config.yaml")), Loader=yaml_loader)
 
@@ -93,8 +97,10 @@ async def auto_playlists():
     await abs_client.authorize(ABS_USER, ABS_PASSWORD)
 
     libs = await abs_client.get_libraries()
-    abs_user_playlists = await abs_client.get_user_playlists()
-    abs_user_playlists_names = tuple(p["name"] for p in abs_user_playlists)
+    abs_user_playlists_raw = await abs_client.get_user_playlists()
+    abs_user_playlists_by_name = {
+        normalize_name(p["name"]): p for p in abs_user_playlists_raw
+    }
 
     config_podcasts = list(dict_extract("feed_name", config))
     config_libraries = list(dict_extract("library_name", config))
@@ -165,43 +171,32 @@ async def auto_playlists():
             sort_order = playlist_config.get("sort_order", ["tier", "roundrobin"])
             ordered = []
 
-            # If only "shuffle" is in sort_order, do a full shuffle
             if sort_order == ["shuffle"] or (set(sort_order) == {"shuffle"}):
                 flat = [ep for tier in tiers.values() for sublist in tier for ep in sublist]
                 random.shuffle(flat)
                 ordered.extend(flat)
-
-            # Tiered sorting (with optional shuffle or roundrobin within each tier)
             elif "tier" in sort_order:
                 tier_keys = sorted(tiers.keys())
                 for t in tier_keys:
                     podcasts_in_tier = [sublist for sublist in tiers[t] if sublist]
-
                     if "shuffle" in sort_order and "roundrobin" not in sort_order:
-                        # Shuffle all episodes within the tier, flatten first
                         flat = [ep for podcast in podcasts_in_tier for ep in podcast]
                         random.shuffle(flat)
                         ordered.extend(flat)
                     elif "roundrobin" in sort_order:
-                        # Roundrobin between podcasts within the tier
                         if "shuffle" in sort_order:
                             for podcast in podcasts_in_tier:
-                                random.shuffle(podcast)  # Shuffle within each podcast
+                                random.shuffle(podcast)
                         ordered.extend(roundrobin(*podcasts_in_tier))
                     else:
-                        # Default tiered concatenation
                         for podcast in podcasts_in_tier:
                             ordered.extend(podcast)
-
-            # Roundrobin without tiering
             elif "roundrobin" in sort_order:
                 flat_lists = [sublist for tier in tiers.values() for sublist in tier if sublist]
                 if "shuffle" in sort_order:
                     for sublist in flat_lists:
                         random.shuffle(sublist)
-                        ordered.extend(roundrobin(*flat_lists))
-
-            # Default fallback
+                ordered.extend(roundrobin(*flat_lists))
             else:
                 for tier in tiers.values():
                     for sublist in tier:
@@ -212,9 +207,10 @@ async def auto_playlists():
             library_playlists.append((lib["id"], playlist_name, ordered_playlist_items))
 
         for playlist in library_playlists:
-            if playlist[1] in abs_user_playlists_names:
+            normalized_name = normalize_name(playlist[1])
+            if normalized_name in abs_user_playlists_by_name:
                 print("modifying existing playlist", playlist[1])
-                existing_playlist = abs_user_playlists[abs_user_playlists_names.index(playlist[1])]
+                existing_playlist = abs_user_playlists_by_name[normalized_name]
                 existing_playlist_transform = [
                     (item["episode"]["libraryItemId"], item["episodeId"])
                     for item in existing_playlist["items"]
