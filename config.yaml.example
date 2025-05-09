@@ -22,7 +22,8 @@ libraries:
     - shuffle
     feeds:
     # Each feed must have feed_name (exact name of the podcast in ABS), tier (integer), sort ("newest" or "oldest"), and count (integer).
-    # "Count" is how many of that podcasts episodes to include in the playlist. 
+    # "Sort" is how the podcast's episodes will be sorted (newest first or oldest first) if no other sorting method defined in "sort_order" overrides it.
+    # "Count" is the maximum nmber of the podcast's episodes to include in the playlist.
     - feed_name: The Daily
       tier: 2
       sort: newest

@@ -1,4 +1,3 @@
-# Import standard and third-party libraries
 import asyncio
 import os
 import random
@@ -20,7 +19,6 @@ except ImportError:
 # Path to the script directory
 script_dir = os.path.dirname(__file__)
 
-
 # Round-robin helper generator
 def roundrobin(*iterables):
     """Visit input iterables in a cycle until each is exhausted."""
@@ -33,7 +31,6 @@ def roundrobin(*iterables):
         except StopIteration:
             pending -= 1
             nexts = cycle(islice(nexts, pending))
-
 
 # Helper functions to extract specific configuration elements
 def get_config_library_playlists(config, library_name):
@@ -229,7 +226,6 @@ async def auto_playlists():
 
             # Create ABSClient.PlaylistItem objects for submission
             ordered_playlist_items = [ABSClient.PlaylistItem(lid, eid) for lid, eid in ordered]
-            print("Final ordered episode count:", len(ordered_playlist_items))
             library_playlists.append((lib["id"], playlist_name, ordered_playlist_items))
 
         # Apply playlist updates to Audiobookshelf
