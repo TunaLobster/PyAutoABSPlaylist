@@ -13,5 +13,5 @@ A quick script to set up AudioBookShelf playlists in a particular order based on
 
 ## TODO
 - [ ] Add argparse and pass a config file in
-- [ ] Implement sorting functions to that sort_order will work
+- [ ] Implement sorting functions so that sort_order will work
 - [ ] Raise a better error if the config file has a podcast that was not found in the library
