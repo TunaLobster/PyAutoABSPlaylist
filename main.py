@@ -190,7 +190,10 @@ async def auto_playlists():
 
             # Determine episode sort order strategy for the final playlist
             playlist_config = get_config_library_playlist_config(config, lib["name"], playlist_name)
-            sort_order = playlist_config.get("sort_order", ["tier", "roundrobin"])
+            sort_order = playlist_config.get("sort_order") or []
+            valid_sort_keys = {"tier", "roundrobin", "shuffle"}
+            if not any(key in sort_order for key in valid_sort_keys):
+                sort_order = ["shuffle"]
             ordered = []
 
             if sort_order == ["shuffle"] or (set(sort_order) == {"shuffle"}):
