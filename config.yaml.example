@@ -10,8 +10,8 @@ libraries:
     include_finished: False
     sort_order:
     # Possible values: "tier", "roundrobin", "shuffle", or any combination. 
-    # tier: podasts are grouped and sorted by tier, with the lowest tier value listed first.
-    # roundrobin: all episodes are sorted roundrobin style, e.g.: (podcast 1: episode 101, episode 102, episode 103; podcast 2: episode 201; podcast 3: espisode 301, episode 302) → 101, 201, 301, 102, 302, 103C.
+    # tier: podcasts are grouped and sorted by tier, with the lowest tier value listed first.
+    # roundrobin: all episodes are sorted roundrobin style, e.g.: (podcast 1: episode 101, episode 102, episode 103; podcast 2: episode 201; podcast 3: episode 301, episode 302) → 101, 201, 301, 102, 302, 103C.
     # shuffle: all episodes are sorted randomly, ignoring their tier value.
     # tier + roundrobin: podcasts are grouped and sorted by tier and then episodes are sorted roundrobin within each tier.
     # tier + shuffle: podcasts are grouped and sorted by tier and then episodes are sorted randomly within each tier.
@@ -23,7 +23,7 @@ libraries:
     feeds:
     # Each feed must have feed_name (exact name of the podcast in ABS), tier (integer), sort ("newest" or "oldest"), and count (integer).
     # "Sort" is how the podcast's episodes will be sorted (newest first or oldest first) if no other sorting method defined in "sort_order" overrides it.
-    # "Count" is the maximum nmber of the podcast's episodes to include in the playlist.
+    # "Count" is the maximum number of the podcast's episodes to include in the playlist.
     - feed_name: The Daily
       tier: 2
       sort: newest
