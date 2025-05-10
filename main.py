@@ -19,7 +19,7 @@ except ImportError:
 script_dir = os.path.dirname(__file__)
 
 # Set up logging
-log_dir = os.path.expanduser("~/.local/share/PyAutoABSPlaylist/logs")
+log_dir = os.path.expanduser("~/.local/share/pyautoabsplaylist/logs")
 os.makedirs(log_dir, exist_ok=True)
 log_file = os.path.join(log_dir, "playlist_auto.log")
 logging.basicConfig(
