@@ -22,7 +22,7 @@ Options:
   --config <path>    Path to a config file. If omitted, uses \`config.yaml\` in the current directory.
   --venv <name>      Name for the virtual environment. If omitted, defaults to "myvenv".
   --log              Show and follow the log file at ${LOG_FILE}
-  --close-venv       Deactivate the virtual environment.
+  --close-venv       Manually deactivate the virtual environment.
   --help             Show this help message and exit.
 
 Behavior:
