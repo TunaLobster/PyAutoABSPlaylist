@@ -161,6 +161,7 @@ async def auto_playlists():
             for podcast_title, library_item_id, podcast_episodes in podcast_episode_lists:
                 if podcast_title not in get_config_library_playlist_podcasts(config, lib["name"], playlist_name):
                     continue
+                logging.info(f"Processing podcast: {podcast_title} in library: {lib['name']}")
                 feed_config = get_feed_config(config, lib["name"], playlist_name, podcast_title)
                 if feed_config is None:
                     logging.warning(f"Error finding feed config for {lib['name']} {playlist_name} {podcast_title}")
