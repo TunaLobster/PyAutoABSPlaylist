@@ -1,6 +1,8 @@
+import argparse
 import asyncio
 import os
 import random
+import sys
 from collections import defaultdict
 from datetime import datetime
 from itertools import cycle, islice
@@ -51,12 +53,14 @@ def get_config_library_playlists(config, library_name):
             return [y["playlist_name"] for y in x["playlists"]]
     return []
 
+
 def get_config_library_playlist_config(config, library_name, playlist_name):
     for x in config["libraries"]:
         if x["library_name"] == library_name:
             for y in x["playlists"]:
                 if y["playlist_name"] == playlist_name:
                     return y
+
 
 def get_config_library_playlist_podcasts(config, library_name, playlist_name):
     for x in config["libraries"]:
@@ -65,6 +69,7 @@ def get_config_library_playlist_podcasts(config, library_name, playlist_name):
                 if y["playlist_name"] == playlist_name:
                     return [z["feed_name"] for z in y["feeds"]]
     return []
+
 
 def get_feed_config(config, library_name, playlist_name, podcast_title):
     for x in config["libraries"]:
@@ -100,11 +105,7 @@ def normalize_name(name):
 
 
 # Main async function to manage playlist creation/updating
-async def auto_playlists():
-    # Load config file
-    config = yaml.load(open(os.path.join(script_dir, "config.yaml")), Loader=yaml_loader)
-    logging.info("Config loaded successfully.")
-
+async def auto_playlists(config):
     # Initialize Audiobookshelf client
     ABS_URL = config["server"]["address"]
     ABS_USER = config["server"]["user"]
@@ -280,8 +281,24 @@ async def auto_playlists():
 
 # Entry point for script
 def main():
-    logging.info("Starting playlist automation script.")
-    asyncio.run(auto_playlists())
+    parser = argparse.ArgumentParser(description="Audiobookshelf auto-playlist script.")
+    parser.add_argument(
+        "--config",
+        type=str,
+        help="Path to YAML config file",
+        default="config.yaml"
+    )
+    args = parser.parse_args()
+
+    config_path = args.config
+    if not os.path.isfile(config_path):
+        print(f"Error: config file not found at: {config_path}")
+        sys.exit(1)
+
+    with open(config_path) as f:
+        config = yaml.load(f, Loader=yaml_loader)
+
+    asyncio.run(auto_playlists(config))
 
 
 if __name__ == "__main__":
