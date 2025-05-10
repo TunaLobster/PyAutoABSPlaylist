@@ -8,8 +8,8 @@ from datetime import datetime
 from itertools import cycle, islice
 
 import yaml
-from audiobookshelf import ABSClient
-from tree_tools import dict_extract
+from audiobookshelf import ABSClient  # Client for interacting with the Audiobookshelf server
+from tree_tools import dict_extract  # A helper to recursively extract keys from nested dicts
 
 # Use CLoader if available for faster YAML parsing
 try:
