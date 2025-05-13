@@ -6,7 +6,7 @@ import sys
 from collections import defaultdict
 from datetime import datetime
 from itertools import cycle, islice
-
+import logging
 import yaml
 from audiobookshelf import ABSClient  # Client for interacting with the Audiobookshelf server
 from tree_tools import dict_extract  # A helper to recursively extract keys from nested dicts
@@ -19,6 +19,19 @@ except ImportError:
 
 # Path to the script directory
 script_dir = os.path.dirname(__file__)
+
+# Set up logging
+log_dir = os.path.expanduser("~/.local/share/pyautoabsplaylist/logs")
+os.makedirs(log_dir, exist_ok=True)
+log_file = os.path.join(log_dir, "playlist_auto.log")
+logging.basicConfig(
+    level=logging.DEBUG,  # Default to DEBUG level for detailed logs
+    format="%(asctime)s [%(levelname)s] - %(message)s",
+    handlers=[
+        logging.FileHandler(log_file),
+        logging.StreamHandler()  # Also print to console
+    ]
+)
 
 # Round-robin helper generator
 def roundrobin(*iterables):
@@ -100,6 +113,7 @@ async def auto_playlists(config):
 
     abs_client = ABSClient(ABS_URL)
     await abs_client.authorize(ABS_USER, ABS_PASSWORD)
+    logging.info("Authorized with Audiobookshelf server.")
 
     # Get libraries and user playlists from server
     libs = await abs_client.get_libraries()
@@ -114,8 +128,9 @@ async def auto_playlists(config):
 
     # Loop through each library on the server
     for lib in libs:
+        logging.debug(f"Checking library: {lib['name']}")
         if lib["name"] not in config_libraries:
-            print("Library", lib["name"], "is not in the config...skipping")
+            logging.info(f"Library {lib['name']} is not in the config...skipping")
             continue
 
         # Get all items in the library
@@ -127,7 +142,7 @@ async def auto_playlists(config):
                 library_podcasts.append((library_item_title, library_item["id"]))
 
         if len(library_podcasts) == 0:
-            print("No matching podcasts between config and library items")
+            logging.info(f"No matching podcasts between config and library items for library {lib['name']}")
             continue
 
         # Collect episodes for each podcast
@@ -140,15 +155,17 @@ async def auto_playlists(config):
 
         # Process each configured playlist
         for playlist_name in get_config_library_playlists(config, lib["name"]):
+            logging.info(f"Processing playlist: {playlist_name} in library: {lib['name']}")
             tiers = defaultdict(list)
 
             # Organize episodes per feed config
             for podcast_title, library_item_id, podcast_episodes in podcast_episode_lists:
                 if podcast_title not in get_config_library_playlist_podcasts(config, lib["name"], playlist_name):
                     continue
+                logging.info(f"Processing podcast: {podcast_title} in library: {lib['name']}")
                 feed_config = get_feed_config(config, lib["name"], playlist_name, podcast_title)
                 if feed_config is None:
-                    print("Error finding feed config", lib["name"], playlist_name, podcast_title)
+                    logging.warning(f"Error finding feed config for {lib['name']} {playlist_name} {podcast_title}")
                     continue
                 sort_style = feed_config["sort"]
                 prepared_podcast_episode_list = podcast_episodes
@@ -233,7 +250,7 @@ async def auto_playlists(config):
         for playlist in library_playlists:
             normalized_name = normalize_name(playlist[1])
             if normalized_name in abs_user_playlists_by_name:
-                print("modifying existing playlist", playlist[1])
+                logging.info(f"Modifying existing playlist: {playlist[1]}")
                 existing_playlist = abs_user_playlists_by_name[normalized_name]
                 existing_playlist_transform = [
                     (item["episode"]["libraryItemId"], item["episodeId"])
@@ -258,7 +275,7 @@ async def auto_playlists(config):
                     items=playlist[2],
                 )
             else:
-                print("creating new playlist", playlist[1])
+                logging.info(f"Creating new playlist: {playlist[1]}")
                 await abs_client.create_playlist(playlist[0], playlist[1], items=playlist[2])
 
 
