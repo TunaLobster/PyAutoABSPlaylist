@@ -22,6 +22,7 @@ A quick script to set up AudioBookShelf playlists in a particular order based on
 9. Remember to deactivate the venv: `deactivate`
 
 **Optional**: Use the Bash wrapper, which handles the venv for you, instead of calling the python script directly.
+
 5. Create a symlink of `/path/to/this/repo/pyautoabsplaylist.sh` somewhere in your `$PATH` (e.g., `~/bin/pyautoabsplaylist.sh`).
 6. Execute the bash wrapper script: `pyautabsplaylist.sh`
 
@@ -38,7 +39,7 @@ python main.py [--config </path/to/config]
 ## Usage: Bash wrapper
 
 ```
-pyautoabsplaylist.sh [--config </path/to/config.yaml>]
+pyautoabsplaylist.sh [--config </path/to/config.yaml>] [--venv <name>] [--log] [--close-venv]
 
 --config <path>    Path to a config file. If omitted, defaults to `config.yaml` in the current directory.
 --venv <name>      Name for the virtual environment. If omitted, defaults to "myvenv".
