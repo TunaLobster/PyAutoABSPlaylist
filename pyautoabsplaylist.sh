@@ -16,7 +16,7 @@ touch "${LOG_FILE}"
 show_help() {
     cat <<EOF
 
-Usage: $(basename "$0") [--config <path/to/config.yaml>] [--venv <name>] [--log] [--close-venv]
+Usage: $(basename "$0") [--config </path/to/config.yaml>] [--venv <name>] [--log] [--close-venv]
 
 Options:
   --config <path>    Path to a config file. If omitted, uses \`config.yaml\` in the current directory.
